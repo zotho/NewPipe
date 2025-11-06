@@ -1204,8 +1204,11 @@ public final class VideoDetailFragment
         }
 
         PlayQueue queue = playQueue;
-        // Size can be 0 because queue removes bad stream automatically when error occurs
-        if (queue == null || queue.isEmpty()) {
+        // Size can be 0 because queue removes bad stream automatically when error occurs.
+        // Only fall back to a single item queue when the current queue is empty and complete;
+        // otherwise we might discard queues (like playlist queues) that still have to fetch
+        // their contents asynchronously (e.g. bookmarked playlists).
+        if (queue == null || (queue.isEmpty() && queue.isComplete())) {
             queue = new SinglePlayQueue(currentInfo);
         }
 
